@@ -42,13 +42,14 @@ def sing_in(request):
             return redirect('home')
 
         else:
-            messages.error(request, "Bad Credentials")
+            messages.error(request, "Bad Credentials!")
             return redirect("sing_in")
 
     return render(request, 'base/sing_in.html')
 
 def sing_out(request):
    logout(request)
+   messages.success(request, "Logged Out Successfully!")
    return redirect('sing_in')
 
 def home(request):

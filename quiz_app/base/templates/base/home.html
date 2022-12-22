@@ -4,7 +4,7 @@
 
 {% block content %}
 
-  <h3> Welcome to Quiz World! </h3>
+<h5 class="card-title"> Welcome to Quiz World! </h5>
 
   {% if  request.user.is_authenticated %}
   
@@ -19,7 +19,29 @@
   <h1> List of category for choose </h1>
     
     <div class="form-group" >
-        
+              
+      
+      <div class="row h-10">
+        <a href="{% url 'start' %}">
+          <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        </a>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+        <div class="col-md-4"><button type="button" class="btn btn-dark btn-square-md">Button</button></div>
+      </div>
+      
+
 
     </div>
   {% else %}
