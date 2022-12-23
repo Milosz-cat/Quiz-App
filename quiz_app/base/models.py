@@ -15,10 +15,14 @@ class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
 
-
+    def __str__(self):
+        return self.text
 
 class Answer(models.Model):
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.CharField(max_length=50)
     is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.content

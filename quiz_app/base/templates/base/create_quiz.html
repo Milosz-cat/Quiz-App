@@ -1,0 +1,27 @@
+{% extends 'base/core.html' %}
+
+{% block title %}Create Quiz{% endblock %}
+
+{% block content %}
+
+    <div class="card-header"><h5 class="card-title">Create an Category</h5></div>
+            
+    <div class="card-body p-5">
+                
+        <form action=" " method="POST">
+            {% csrf_token %}
+
+            {{ form }}
+
+            <br><br>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit"
+                class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Create</button>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock content %}

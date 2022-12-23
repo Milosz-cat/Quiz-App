@@ -8,5 +8,6 @@ urlpatterns = [
     path('sing_out/',  views.sing_out, name='sing_out'),
     path('question/',  views.question, name='question'),
     path('start/',  views.start, name='start'),
+    path('create_quiz/',  views.create_quiz, name='create_quiz'),
 ]
 

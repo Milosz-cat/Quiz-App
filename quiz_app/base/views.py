@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-# Create your views here.
 
+from .forms import QuizForm, QuestionForm, AnswerForm
+from .models import Quiz
 
 def sing_up(request):
 
@@ -53,7 +54,25 @@ def sing_out(request):
    return redirect('sing_in')
 
 def home(request):
-    return render(request, 'base/home.html')
+
+    quizzes = Quiz.objects.all()
+
+    return render(request, 'base/home.html', {'quizzes': quizzes})
+
+
+def create_quiz(request):  
+
+    form = QuizForm()
+
+    if request.method == "POST":
+        form = QuizForm(request.POST)  
+        if form.is_valid():
+            form.save()
+
+        return redirect('home')
+    
+    context = {'form': form}
+    return render(request, 'base/create_quiz.html', context)
 
 def question(request):
     return render(request, 'base/question.html')
