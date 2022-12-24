@@ -1,4 +1,4 @@
-{% extends 'base/core.html' %}
+{% extends 'base/base.html' %}
 
 {% block title %}Home{% endblock %}
 
@@ -29,9 +29,11 @@
     <div class="form-group" >
               
     {% for quiz in quizzes %}
-      <button type="button" class="btn btn-dark btn-square-md">
-        {{ quiz.name}}
+     <a href="{% url 'start_quiz' quiz.pk %}">
+      <button type="button" class="btn btn-light btn-square-md ">
+        {{ quiz.name }}{% comment %}  {{ quiz.id}} {% endcomment %}
       </button>
+    </a> 
     {% endfor %}
 
 

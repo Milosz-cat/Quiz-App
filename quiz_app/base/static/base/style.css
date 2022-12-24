@@ -1,0 +1,12 @@
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #545151;
+}
+
+.btn.btn-light.btn-square-md{
+    width: 150px !important;
+    height: 150px !important;
+    padding: 5px !important;
+}

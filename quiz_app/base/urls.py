@@ -7,7 +7,8 @@ urlpatterns = [
     path('sing_in/',  views.sing_in, name='sing_in'),
     path('sing_out/',  views.sing_out, name='sing_out'),
     path('question/',  views.question, name='question'),
-    path('start/',  views.start, name='start'),
+    path('start_quiz/<int:pk>',  views.QuizDetailView.as_view(), name='start_quiz'),
     path('create_quiz/',  views.create_quiz, name='create_quiz'),
+    path('create_question',  views.create_question, name='create_question'),
 ]
 

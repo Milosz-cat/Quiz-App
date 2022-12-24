@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import QuizForm, QuestionForm, AnswerForm
 from .models import Quiz
 
+from django.views.generic import DetailView
+
 def sing_up(request):
 
     if request.method == "POST":
@@ -62,6 +64,7 @@ def home(request):
 
 def create_quiz(request):  
 
+    title = 'Create a new quiz!'
     form = QuizForm()
 
     if request.method == "POST":
@@ -71,11 +74,29 @@ def create_quiz(request):
 
         return redirect('home')
     
-    context = {'form': form}
-    return render(request, 'base/create_quiz.html', context)
+    context = {'form': form, 'title': title}
+    return render(request, 'base/create.html', context)
 
 def question(request):
     return render(request, 'base/question.html')
 
-def start(request):
-    return render(request, 'base/start.html')
+def create_question(request):
+
+
+    title = 'Create a new question!'
+    form = QuestionForm()
+
+    if request.method == "POST":
+        form = QuestionForm(request.POST)  
+        if form.is_valid():
+            form.save()
+
+        return redirect('home')
+    context = {'form': form, 'title': title}
+    return render(request, 'base/create.html', context)
+
+class QuizDetailView(DetailView):
+
+    model = Quiz
+    template_name = 'base/start_quiz.html'
+    context_object_name = 'quiz'

@@ -18,8 +18,6 @@ class QuizForm(ModelForm):
 
 
 class QuestionForm(ModelForm):
-    
-    quiz = forms.ModelChoiceField(queryset=Quiz.objects.all())
 
     class Meta:
         model = Question

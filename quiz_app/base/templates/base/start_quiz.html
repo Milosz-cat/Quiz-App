@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Start{% endblock %}
+
+{% block content %}
+
+{% comment %} <h5> leaderBoard </h5>
+
+<table class="table table-striped"></table> {% endcomment %}
+<div class="col">
+  <a href="{% url 'create_question' %}">
+    <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Create a Question </button>
+  </a>
+</div>
+
+<h1><span class="badge bg-secondary">{{quiz.name}}</span></h1>
+
+{{ quiz.description }}
+
+<div class="col">
+    <a href="{% url 'question' %}">
+      <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Let's START ! </button>
+    </a>
+</div>
+
+{% endblock content %}
