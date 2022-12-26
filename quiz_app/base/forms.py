@@ -3,6 +3,7 @@ from .models import Question, Quiz, Answer
 from django import forms
 
 class QuizForm(ModelForm):
+
     class Meta:
         model = Quiz
         fields = '__all__'
@@ -21,14 +22,21 @@ class QuestionForm(ModelForm):
 
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = ['text']
 
         widgets = {
-            'quiz': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choose a Quiz'}),
+            # 'quiz': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choose a Quiz'}),
             'text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create a Question'}),
         }
 
 class AnswerForm(ModelForm):
+
     class Meta:
         model = Answer
-        fields = '__all__'
+        fields = ['content', 'is_correct']
+
+
+        widgets = {
+            'content': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create an Answer'}),
+            'is_correct': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Is the answer correct?'}),
+        }
