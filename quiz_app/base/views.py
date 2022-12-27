@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
 from .forms import QuizForm, QuestionForm, AnswerForm
+from django.forms import formset_factory
 from .models import Quiz
 
 from django.views.generic import DetailView
@@ -86,46 +87,33 @@ def create_question(request, quiz_id):
     title = 'Create a new question!'
     form = QuestionForm()
 
-    if request.method == "POST":
-        form = QuestionForm(request.POST)  
-        if form.is_valid():
+    AnswerFormSet = formset_factory(AnswerForm, extra=4)
+    formset = AnswerFormSet()
 
+    if request.method == "POST":
+
+        form = QuestionForm(request.POST)  
+        formset = AnswerFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid() :
+
+            messages.success(request, "Creating question Successfully!")
+            
             question = form.save(commit=False)
             quiz = Quiz.objects.get(pk=quiz_id)
             question.quiz = quiz
             question.save()
 
+            for answer_form in formset:
+                answer = answer_form.save(commit=False)
+                answer.question = question
+                answer.save()
+        else:
+            messages.error(request, "Bad Credentials!")
         return redirect(reverse('start_quiz', kwargs={'pk': quiz_id}))
 
-    context = {'form': form, 'title': title}
+    context = {'form': form, 'formset': formset, 'title': title}
     return render(request, 'base/create.html', context)
-
-# def create_answer(request, question_id):
-
-#     title = 'Create answers!'
-#     form1 = AnswerForm()
-#     form2 = AnswerForm()
-#     form3=  AnswerForm()
-#     form4 = AnswerForm()
-
-#     if request.method == "POST":
-
-#         form1 = AnswerForm(request.POST)
-#         form2 = AnswerForm(request.POST)
-#         form3=  AnswerForm(request.POST)
-#         form4 = AnswerForm(request.POST)
-
-#         if form1.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid():
-            
-#             form1.save()
-#             form2.save()
-#             form3.save()
-#             form4.save()
-
-#         return redirect(reverse('start_quiz', kwargs={'pk': quiz_id}))
-
-#     context = {'form1': form1,'form2': form2,'form3': form3,'form4': form4, 'title': title}
-#     return render(request, 'base/create.html', context)
 
 class QuizDetailView(DetailView):
 

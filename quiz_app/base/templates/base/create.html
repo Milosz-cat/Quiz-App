@@ -8,17 +8,16 @@
 
     <div class="card-body p-5">
                 
-        <form action=" " method="POST">
+        <form action=" " method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            {% comment %} {% if form %} {% endcomment %}
-            {{ form }}
-            {% comment %} {% elif form1 and form2 and form3 and form4 %}
-            <h3>Answer 1</h3>{{ form1 }}<br>
-            <h3>Answer 2</h3>{{ form2 }}<br>
-            <h3>Answer 3</h3>{{ form3 }}<br>
-            <h3>Answer 4</h3>{{ form4 }}<br>
-            {% endif %} {% endcomment %}
+            {{ form }} <br><br>
+            
+            {{ formset.management_form }}
+            {% for answer_form in formset %}
+                {{ answer_form }}<br>
+            {% endfor %}
+
             <br><br>
 
             <div class="d-flex justify-content-center">

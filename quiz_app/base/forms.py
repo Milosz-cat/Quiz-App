@@ -1,6 +1,7 @@
 from django.forms import ModelForm
-from .models import Question, Quiz, Answer
 from django import forms
+from .models import Question, Quiz, Answer
+from django.forms.widgets import CheckboxInput
 
 class QuizForm(ModelForm):
 
@@ -25,7 +26,6 @@ class QuestionForm(ModelForm):
         fields = ['text']
 
         widgets = {
-            # 'quiz': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choose a Quiz'}),
             'text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create a Question'}),
         }
 
@@ -38,5 +38,6 @@ class AnswerForm(ModelForm):
 
         widgets = {
             'content': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create an Answer'}),
-            'is_correct': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Is the answer correct?'}),
+            'is_correct': CheckboxInput(),
         }
+
