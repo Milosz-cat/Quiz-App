@@ -4,8 +4,20 @@
 
 {% block content %}
 
-<h5> Quiz time </h5>
+<h5>  </h5>
 <div class="card-body p-5">
 
+    {% for question in Questions %}
+    {{ question.text }}<br>
+    {% endfor %}
+
+    <div class="col">
+        <a href="{% url 'question' %}">
+          <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Next </button>
+        </a>
+    </div>
+
 </div>
+
+
 {% endblock content %}

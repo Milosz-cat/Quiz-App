@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from .forms import QuizForm, QuestionForm, AnswerForm
 from django.forms import formset_factory
-from .models import Quiz
+from .models import Quiz, Question, Answer
 
 from django.views.generic import DetailView
 
@@ -80,7 +80,11 @@ def create_quiz(request):
     return render(request, 'base/create.html', context)
 
 def question(request):
-    return render(request, 'base/question.html')
+
+    Questions = Question.objects.all()
+
+    context = {'Questions': Questions}
+    return render(request, 'base/question.html', context)
 
 def create_question(request, quiz_id):
 
@@ -94,7 +98,7 @@ def create_question(request, quiz_id):
 
         form = QuestionForm(request.POST)  
         formset = AnswerFormSet(request.POST)
-
+        
         if form.is_valid() and formset.is_valid() :
 
             messages.success(request, "Creating question Successfully!")
