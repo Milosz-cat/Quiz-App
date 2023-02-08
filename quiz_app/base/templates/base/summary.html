@@ -6,18 +6,12 @@
 
 <h5>  </h5>
 <div class="card-body p-5">
-
-  <h2>{{ question_id|add:"1" }}.{{ Questions.text }}</h2><br>
-
+    <h1>Summary</h1>
 </div>
-{% for answer in Answers %}
-  <div class="d-flex justify-content-center">
-    <h4>{{answer}}</h4><br>
-  </div>
-{% endfor %}
+
 
 <div class="col">
-  <a href="{% url 'question' question_id %}">
+  <a href="{% url 'home'  %}">
     <button type="submit" name='next' class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Next </button>
   </a>
 </div>

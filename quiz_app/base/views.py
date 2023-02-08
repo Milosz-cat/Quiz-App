@@ -9,6 +9,7 @@ from django.forms import formset_factory
 from .models import Quiz, Question, Answer
 
 from django.views.generic import DetailView
+from django.core.paginator import Paginator
 
 def sing_up(request):
 
@@ -63,6 +64,9 @@ def home(request):
 
     return render(request, 'base/home.html', {'quizzes': quizzes})
 
+def summary(request):
+
+    return render(request, 'base/summary.html')
 
 def create_quiz(request):  
 
@@ -79,12 +83,21 @@ def create_quiz(request):
     context = {'form': form, 'title': title}
     return render(request, 'base/create.html', context)
 
-def question(request):
-
+def question(request, question_id=-1 ):
+    
     Questions = Question.objects.all()
+    size_q = len(Questions)
+    current_id = question_id + 1
 
-    context = {'Questions': Questions}
-    return render(request, 'base/question.html', context)
+    if current_id < size_q:
+
+        Answers = Answer.objects.all()
+        Answers = Answers.filter(question=Questions[current_id])
+
+        context = {'Questions': Questions[current_id], 'question_id': current_id, 'Answers': Answers}
+        return render(request, 'base/question.html', context)
+    else:
+        return render(request, 'base/summary.html')
 
 def create_question(request, quiz_id):
 
