@@ -35,9 +35,16 @@ class AnswerForm(ModelForm):
         model = Answer
         fields = ['content', 'is_correct']
 
-
         widgets = {
             'content': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create an Answer'}),
             'is_correct': CheckboxInput(),
         }
 
+class Answer_Select_Form(forms.Form):
+    answers = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=None,
+        label='',
+    )
+
+    

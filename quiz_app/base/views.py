@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import QuizForm, QuestionForm, AnswerForm
+from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
 from django.forms import formset_factory
 from .models import Quiz, Question, Answer
 
@@ -83,21 +83,38 @@ def create_quiz(request):
     context = {'form': form, 'title': title}
     return render(request, 'base/create.html', context)
 
-def question(request, question_id=-1 ):
+
+def question(request, question_id=-1, points=0):
     
     Questions = Question.objects.all()
     size_q = len(Questions)
     current_id = question_id + 1
 
-    if current_id < size_q:
+    if request.method == 'POST' and 'answers' in request.POST:
+        selected_answers = request.POST.getlist('answers')
+        print(selected_answers)
 
+        correct_answers = Answer.objects.all()
+        correct_answers = correct_answers.filter(question=Questions[current_id-1]).filter(is_correct=1)
+        for n in correct_answers:
+           if str(n.pk) in selected_answers:
+            points+=1
+    
+    print(points)
+
+    if current_id < size_q:
         Answers = Answer.objects.all()
         Answers = Answers.filter(question=Questions[current_id])
 
-        context = {'Questions': Questions[current_id], 'question_id': current_id, 'Answers': Answers}
+        form = Answer_Select_Form()
+        form.fields['answers'].queryset = Answers
+        
+        context = {'Questions': Questions[current_id], 'question_id': current_id, 'form': form, 'points': points}
         return render(request, 'base/question.html', context)
+    
     else:
-        return render(request, 'base/summary.html')
+
+        return render(request, 'base/summary.html', {'points': points})
 
 def create_question(request, quiz_id):
 
