@@ -64,10 +64,6 @@ def home(request):
 
     return render(request, 'base/home.html', {'quizzes': quizzes})
 
-def summary(request):
-
-    return render(request, 'base/summary.html')
-
 def create_quiz(request):  
 
     title = 'Create a new quiz!'
@@ -84,37 +80,6 @@ def create_quiz(request):
     return render(request, 'base/create.html', context)
 
 
-def question(request, question_id=-1, points=0):
-    
-    Questions = Question.objects.all()
-    size_q = len(Questions)
-    current_id = question_id + 1
-
-    if request.method == 'POST' and 'answers' in request.POST:
-        selected_answers = request.POST.getlist('answers')
-        print(selected_answers)
-
-        correct_answers = Answer.objects.all()
-        correct_answers = correct_answers.filter(question=Questions[current_id-1]).filter(is_correct=1)
-        for n in correct_answers:
-           if str(n.pk) in selected_answers:
-            points+=1
-    
-    print(points)
-
-    if current_id < size_q:
-        Answers = Answer.objects.all()
-        Answers = Answers.filter(question=Questions[current_id])
-
-        form = Answer_Select_Form()
-        form.fields['answers'].queryset = Answers
-        
-        context = {'Questions': Questions[current_id], 'question_id': current_id, 'form': form, 'points': points}
-        return render(request, 'base/question.html', context)
-    
-    else:
-
-        return render(request, 'base/summary.html', {'points': points})
 
 def create_question(request, quiz_id):
 
@@ -154,3 +119,54 @@ class QuizDetailView(DetailView):
     model = Quiz
     template_name = 'base/start_quiz.html'
     context_object_name = 'quiz'
+
+
+counter = 0
+
+def question(request, quiz_id, question_id, points):
+
+    global counter
+    
+    quiz = Quiz.objects.get(id=quiz_id)
+    Questions = Question.objects.all()
+    Questions = Question.objects.filter(quiz=quiz)
+
+    size_q = len(Questions)
+    question_id = counter
+
+    
+
+    if request.method == 'POST' and 'answers' in request.POST:
+        selected_answers = request.POST.getlist('answers')
+     
+        all_answers = Answer.objects.filter(question=Questions[question_id-1])
+        correct_answers = all_answers.filter(is_correct=1)
+
+        for n in all_answers:
+            if (str(n.pk) in selected_answers and n in correct_answers) or (str(n.pk) not in selected_answers and n not in correct_answers):
+                points+=1
+          
+    # print(points)
+
+    if question_id < size_q:
+        
+        Answers = Answer.objects.all()
+        Answers = Answers.filter(question=Questions[question_id])
+
+        form = Answer_Select_Form()
+        form.fields['answers'].queryset = Answers
+    
+        counter += 1
+        context = {'quiz_id':quiz_id, 'Questions': Questions[question_id], 'question_id': question_id, 'form': form, 'points': points}
+        return render(request, 'base/question.html', context)
+
+    else:
+        counter = 0
+        return summary(request, points, quiz_id)
+
+def summary(request, points, quiz_id):
+    
+    answers_count = len(Answer.objects.filter(question__quiz_id=quiz_id))
+    percentages = round((points / answers_count) * 100)
+    print(percentages)
+    return render(request, 'base/summary.html', {'points': points, 'percentages':percentages})
