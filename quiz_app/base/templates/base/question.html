@@ -4,23 +4,18 @@
 
 {% block content %}
 
-<h5>  </h5>
-<div class="card-body p-5">
 
-  <h2>{{ question_id|add:"1" }}.{{ Questions.text }}</h2><br>
-
-</div>
-
-<form action="{% url 'question' quiz_id question_id points%}" method="post">
+<form action="{% url 'summary' quiz_id %}" method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Next" name='next' class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+    {% for form, question in list %}
+      <div class="card-body p-5">
+          <h2>{{ forloop.counter }}. {{ question }} </h2>
+      </div>
+      {{ form }}
+    {% endfor%}<br><br>
+  <input type="submit" value="Send" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
 </form>
 
-{% comment %} <div class="col">
-  <a href="{% url 'question' question_id %}">
-    <button type="submit" name='next' class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Next </button>
-  </a>
-</div> {% endcomment %}
+
 
 {% endblock content %}

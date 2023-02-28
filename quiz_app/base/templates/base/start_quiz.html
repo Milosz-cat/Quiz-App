@@ -18,7 +18,7 @@
 {{ quiz.description }}{{quiz.pk}}
 
 <div class="col">
-    <a href="{% url 'question' quiz_id=quiz.id question_id=0 points=0  %}">
+    <a href="{% url 'question' quiz_id=quiz.id%}">
       <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Let's START ! </button>
     </a>
 </div>
