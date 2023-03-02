@@ -8,14 +8,54 @@
 <form action="{% url 'summary' quiz_id %}" method="post">
   {% csrf_token %}
     {% for form, question in list %}
-      <div class="card-body p-5">
+      <div class="item" class="card-body p-5">
           <h2>{{ forloop.counter }}. {{ question }} </h2>
-      </div>
-      {{ form }}
+      
+      <h3>{{ form }}</h3></div>
     {% endfor%}<br><br>
-  <input type="submit" value="Send" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+    <div class="d-flex justify-content-center padding-2">
+      <input type="submit" value="Send" id="send" class="btn btn-success btn-block btn-lg text-body">
+    </div>
 </form>
+<div class="d-flex justify-content-between">
+    <button class="btn btn-success btn-block btn-lg text-body" id="prev">Previous</button>
+    <button class="btn btn-success btn-block btn-lg text-body" id="next">Next</button>
+</div>
 
 
+<script>
+  let currentIndex = 0;
+
+  const elements = document.querySelectorAll('.item');
+  var button = document.querySelector('#send');
+
+  elements.forEach(element => element.style.display = 'none');
+  button.style.display = 'block';
+
+  elements[currentIndex].style.display = 'block';
+  button.style.display = 'none';
+
+  const prevButton = document.getElementById('prev');
+  prevButton.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      elements[currentIndex].style.display = 'none';
+      currentIndex--;
+      elements[currentIndex].style.display = 'block';
+    }
+
+  });
+
+  const nextButton = document.getElementById('next');
+  nextButton.addEventListener('click', () => {
+    if (currentIndex < elements.length - 1) {
+      elements[currentIndex].style.display = 'none';
+      currentIndex++;
+      elements[currentIndex].style.display = 'block';
+    }
+    if(currentIndex == elements.length - 1) {
+      button.style.display = 'block';
+    }
+  });
+</script>
 
 {% endblock content %}
