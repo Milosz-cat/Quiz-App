@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
 from django.forms import formset_factory
-from .models import Quiz, Question, Answer
+from .models import Quiz, Question, Answer, LeaderBoard
 
 from django.views.generic import DetailView
 
@@ -126,7 +126,7 @@ def question(request, quiz_id):
 
     Current_Quiz = Quiz.objects.get(id=quiz_id)
     Questions = Question.objects.filter(quiz=Current_Quiz)
-
+        
     Answers = Answer.objects.all()
     AnswerFormSet = formset_factory(Answer_Select_Form, extra=len(Questions))
     formset = AnswerFormSet()
@@ -142,11 +142,11 @@ def question(request, quiz_id):
 def summary(request, quiz_id):
 
     points=0
+    
+    Current_Quiz = Quiz.objects.get(id=quiz_id)
+    Questions = Question.objects.filter(quiz=Current_Quiz)
 
     if request.method == 'POST' :
-
-        Current_Quiz = Quiz.objects.get(id=quiz_id)
-        Questions = Question.objects.filter(quiz=Current_Quiz)
         
         for i in range(len(Questions)):
             selected_answers = request.POST.getlist(f'form-{i}-answers')
@@ -156,7 +156,15 @@ def summary(request, quiz_id):
             for n in all_answers:
                 if (str(n.pk) in selected_answers and n in correct_answers) or (str(n.pk) not in selected_answers and n not in correct_answers):
                     points+=1
-    
+
+    username = request.user.username
+    score = LeaderBoard(quiz=Current_Quiz, username=username, score=points)
+    score.save()
+
+    leaderboard = LeaderBoard.objects.filter(quiz=Current_Quiz).order_by('-score')[:5]
+    if len(leaderboard) > 5:
+        LeaderBoard.objects.exclude(pk__in=leaderboard).delete()
+
     answers_count = len(Answer.objects.filter(question__quiz_id=quiz_id))
     percentages = round((points / answers_count) * 100)
-    return render(request, 'base/summary.html', {'points': points, 'percentages':percentages})
+    return render(request, 'base/summary.html', {'points': points, 'percentages':percentages, 'leaderboard':leaderboard})

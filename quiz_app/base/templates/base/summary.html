@@ -5,13 +5,33 @@
 {% block content %}
 
 
-<div class="card-body p-5">
+<div class="d-flex justify-content-center">
     <h1>Summary</h1>
 </div>
-
+<br><br>
 <h5> You earn {{ points }} points, which is {{percentages}}%, Congratulation ! </h5>
+<br>
+<table class="table text-white">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Score</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in leaderboard %}
+      <tr> 
+        <td>{{ user.username }} </td>
+        <td>{{ user.score }}</td>
+        <td>{{ user.date }} </td>
+      </tr>
+    {% endfor%}
+  </tbody>
+</table>
 
-<div class="col">
+<br>
+<div class="d-flex justify-content-center">
   <a href="{% url 'home'  %}">
     <button type="submit" name='next' class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Next </button>
   </a>

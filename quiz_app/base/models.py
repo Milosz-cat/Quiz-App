@@ -26,3 +26,10 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.content
+    
+class LeaderBoard(models.Model):
+
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    username = models.CharField(max_length=50)
+    score = models.IntegerField()
+    date = models.DateField(auto_now_add=True)

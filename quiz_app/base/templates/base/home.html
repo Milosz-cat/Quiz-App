@@ -26,18 +26,14 @@
     
   <h1> List of category for choose </h1>
     
-    <div class="form-group" >
-              
-    {% for quiz in quizzes %}
-     <a href="{% url 'start_quiz' quiz.pk %}">
-      <button type="button" class="btn btn-light btn-square-md ">
-        {{ quiz.name }}{% comment %}  {{ quiz.id}} {% endcomment %}
-      </button>
-    </a> 
-    {% endfor %}
-
-
-
+    <div class="form-group" >          
+      {% for quiz in quizzes %}
+        <a href="{% url 'start_quiz' quiz.pk %}">
+          <button type="button" class="btn btn-light btn-square-md ">
+            {{ quiz.name }}{% comment %}  {{ quiz.id}} {% endcomment %}
+          </button>
+        </a> 
+      {% endfor %}
     </div>
 
   {% else %}
@@ -58,8 +54,5 @@
     </div>
 
   {% endif %}
-
-
-
-
+  
 {% endblock content %}

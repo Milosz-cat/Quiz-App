@@ -30,30 +30,16 @@
         </div>
     </div>
     {% endfor %}
-
-    {% comment %} <script>
-        var message_tag = document.getElementById("message_box");
-        
-        setTimeout(function(){ 
-           message_tag.style.display = "none"; 
-        }, 3000); 
-        
-    </script> {% endcomment %}
-
     
-<div class="container p-5 my-5  text-white">
-    <div class="card p-5 my-5 bg-dark text-white">
-        <div class="card-body">
-            {% block content %}
-            {% endblock content %}
+    <div class="container p-5 my-5  text-white">
+        <div class="card p-5 my-5 bg-dark text-white">
+            <div class="card-body">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            
         </div>
-        
-      </div>
     </div>
-
-
-
-
 
 </body>
 
