@@ -5,7 +5,7 @@
 {% block content %}
 
 
-<form action="{% url 'summary' quiz_id %}" method="post">
+<form action="{% url 'summary' quiz_id %}" method="post" id='my-form'>
   {% csrf_token %}
     {% for form, question in list %}
       <div class="item" class="card-body p-5">
@@ -55,6 +55,20 @@
     if(currentIndex == elements.length - 1) {
       button.style.display = 'block';
     }
+  });
+</script>
+
+<script>
+  var startTime = Date.now(); // start duration time
+
+  document.getElementById('my-form').addEventListener('submit', function() {
+    var endTime = Date.now(); // stop duration time
+    var duration = endTime - startTime;
+    var durationField = document.createElement('input');
+    durationField.setAttribute('type', 'hidden');
+    durationField.setAttribute('name', 'duration');
+    durationField.setAttribute('value', duration);
+    document.getElementById('my-form').appendChild(durationField); // add duration to dictionary
   });
 </script>
 

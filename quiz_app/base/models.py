@@ -32,4 +32,5 @@ class LeaderBoard(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     username = models.CharField(max_length=50)
     score = models.IntegerField()
+    time = models.CharField(max_length=50) #models.DurationField()
     date = models.DateField(auto_now_add=True)

@@ -9,6 +9,7 @@ from django.forms import formset_factory
 from .models import Quiz, Question, Answer, LeaderBoard
 
 from django.views.generic import DetailView
+from datetime import timedelta
 
 class QuizDetailView(DetailView):
 
@@ -27,6 +28,10 @@ def sing_up(request):
         # TODO POROWNYWANIE HASEL
         password_1 = request.POST['pass1']
         password_2 = request.POST['pass2']
+
+        if password_1 != password_2:
+            messages.error(request, "Verification of your passwords failed because the passwords are different. Try re-entering passwords.")
+            return render(request, 'base/sing_up.html')
 
         my_user = User.objects.create_user(username, email, password_1)
         my_user.first_name = first_name
@@ -157,11 +162,14 @@ def summary(request, quiz_id):
                 if (str(n.pk) in selected_answers and n in correct_answers) or (str(n.pk) not in selected_answers and n not in correct_answers):
                     points+=1
 
-    username = request.user.username
-    score = LeaderBoard(quiz=Current_Quiz, username=username, score=points)
-    score.save()
+        username = request.user.username
+        duration = str(timedelta(milliseconds=int(request.POST['duration'])))[2:10]
+        score = LeaderBoard(quiz=Current_Quiz, username=username, score=points, time=duration)
+        score.save()
 
-    leaderboard = LeaderBoard.objects.filter(quiz=Current_Quiz).order_by('-score')[:5]
+   
+    #leaderboard = LeaderBoard.objects.filter(quiz=Current_Quiz).delete()
+    leaderboard = LeaderBoard.objects.filter(quiz=Current_Quiz).order_by('-score', 'time')[:5]
     if len(leaderboard) > 5:
         LeaderBoard.objects.exclude(pk__in=leaderboard).delete()
 
