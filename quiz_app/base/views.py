@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import PasswordResetConfirmView,PasswordResetView
+from django.core.mail import send_mail
 
 from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
 from django.forms import formset_factory
@@ -16,6 +18,36 @@ class QuizDetailView(DetailView):
     model = Quiz
     template_name = 'base/start_quiz.html'
     context_object_name = 'quiz'
+
+class CustomPasswordResetView(PasswordResetView):
+    
+    template_name = 'base/password_reset_form.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        subject = 'Reset your password for MySite'
+        message = 'Please click on the link below to reset your password:'
+        url = self.request.build_absolute_uri(
+            f'/reset/{self.get_user(self.object).pk}/{self.object.get_reset_password_token()}')
+        send_mail(
+            subject,
+            f'{message} {url}',
+            'from@example.com',
+            [form.cleaned_data['email']],
+            fail_silently=False,
+        )
+        return response
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(pk=self.kwargs['pk'], is_active=True)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        self.object.set_password(form.cleaned_data['new_password1'])
+        self.object.save()
+        return response
 
 def sing_up(request):
 
