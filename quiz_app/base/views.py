@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import PasswordResetConfirmView,PasswordResetView
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
 from django.core.mail import send_mail
 
 from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
