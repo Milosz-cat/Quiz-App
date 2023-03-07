@@ -3,15 +3,15 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
-from django.core.mail import send_mail
+from django.forms import formset_factory
+from django.views.generic import DetailView
 
 from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
-from django.forms import formset_factory
 from .models import Quiz, Question, Answer, LeaderBoard
+from .helpers import send_forget_password_mail
 
-from django.views.generic import DetailView
 from datetime import timedelta
+
 
 class QuizDetailView(DetailView):
 
@@ -19,45 +19,49 @@ class QuizDetailView(DetailView):
     template_name = 'base/start_quiz.html'
     context_object_name = 'quiz'
 
-class CustomPasswordResetView(PasswordResetView):
+def Password_Reset(request):
     
-    template_name = 'base/password_reset_form.html'
+    if request.method == "POST":
+        email = request.POST.get("email")
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        subject = 'Reset your password for MySite'
-        message = 'Please click on the link below to reset your password:'
-        url = self.request.build_absolute_uri(
-            f'/reset/{self.get_user(self.object).pk}/{self.object.get_reset_password_token()}')
-        send_mail(
-            subject,
-            f'{message} {url}',
-            'from@example.com',
-            [form.cleaned_data['email']],
-            fail_silently=False,
-        )
-        return response
+        if not User.objects.filter(email=email).first():
+            messages.error(request, "The email you entered does not exist, Please try again!")
+            return redirect(request.path)
+        else:
+            user_obj = User.objects.get(email=email)
+            send_forget_password_mail(user_obj.email, user_obj.pk)
+            messages.success(request, "A link to reset your password has been sent to your email.")
+            return render(request, 'base/sing_in.html')
 
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(pk=self.kwargs['pk'], is_active=True)
+    return render(request, 'base/password_reset.html')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        self.object.set_password(form.cleaned_data['new_password1'])
-        self.object.save()
-        return response
+def Password_Reset_Confirm(request, id, token):
+
+    if request.method == "POST":
+
+        password_1 = request.POST['pass1']
+        password_2 = request.POST['pass2']
+
+        if password_1 != password_2:
+            messages.error(request, "Setting your new password failed because the passwords are different. Try re-entering passwords.")
+            return redirect(request.path)
+        else:
+            messages.success(request, "Your password has been changed.")
+            user = User.objects.get(id=id) 
+            user.set_password(password_1)
+            user.save()
+            return redirect('sing_in')
+        
+    return render(request, 'base/password_reset_confirm.html')
 
 def sing_up(request):
-
+    
     if request.method == "POST":
 
         username = request.POST['username']
         first_name = request.POST['fname']
         last_name = request.POST['lname']
         email = request.POST['email']
-        # TODO POROWNYWANIE HASEL
         password_1 = request.POST['pass1']
         password_2 = request.POST['pass2']
 
@@ -83,7 +87,7 @@ def sing_in(request):
     if request.method == "POST":
         username = request.POST['username']
         pass1 = request.POST['pass1']
-
+        print(request.POST)
         user = authenticate(username=username, password=pass1)
 
         if user is not None:
