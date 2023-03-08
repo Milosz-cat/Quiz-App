@@ -7,7 +7,7 @@ class QuizForm(ModelForm):
 
     class Meta:
         model = Quiz
-        fields = '__all__'
+        fields =  ['name', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Create a Name for Quiz'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Create a Descrition for Quiz'}),

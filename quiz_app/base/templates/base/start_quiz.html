@@ -15,7 +15,7 @@
 {{ quiz.description }}
 
 <div class="col">
-    {% if quiz.question_set.count < 3 %}
+    {% if question_count < 3 %}
       <div class="badge bg-secondary"><h5> You must create at least 3 questions to start the quiz! </h5> </div>
     {% else %}
       <a href="{% url 'question' quiz_id=quiz.id %}">

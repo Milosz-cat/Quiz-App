@@ -5,19 +5,30 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.forms import formset_factory
 from django.views.generic import DetailView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import QuizForm, QuestionForm, AnswerForm, Answer_Select_Form
 from .models import Quiz, Question, Answer, LeaderBoard
-from .helpers import send_forget_password_mail
+from .helpers import send_forget_password_mail, send_confirm_correctness
 
 from datetime import timedelta
 
 
-class QuizDetailView(DetailView):
+class QuizDetailView(LoginRequiredMixin, DetailView):
+
+    login_url = '/sing_in/' #Używamy tutaj klasy LoginRequiredMixin, która jest klasyfikatorem widoku Django, który wymaga uwierzytelnienia użytkownika, aby wyświetlić widok. Atrybut login_url wskazuje na adres URL do strony logowania.
+    #Dzięki temu, gdy niezalogowany użytkownik spróbuje uzyskać dostęp do widoku QuizDetailView, zostanie przekierowany na stronę logowania pod adresem /sing_in/. Po pomyślnym zalogowaniu użytkownik zostanie automatycznie przekierowany z powrotem na stronę Quizu, który chciał uzyskać dostęp.
 
     model = Quiz
     template_name = 'base/start_quiz.html'
     context_object_name = 'quiz'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        confirmed_questions = self.object.question_set.filter(is_confirmed=True)
+        context['question_count'] = confirmed_questions.count()
+        return context
 
 def Password_Reset(request):
     
@@ -29,15 +40,16 @@ def Password_Reset(request):
             return redirect(request.path)
         else:
             user_obj = User.objects.get(email=email)
-            send_forget_password_mail(user_obj.email, user_obj.pk)
-            messages.success(request, "A link to reset your password has been sent to your email.")
-            return render(request, 'base/sing_in.html')
+            
+            if send_forget_password_mail(user_obj.email, user_obj.pk) == True:
+                messages.success(request, "A link to reset your password has been sent to your email.")
+                return render(request, 'base/sing_in.html')
 
     return render(request, 'base/password_reset.html')
 
 def Password_Reset_Confirm(request, id, token):
 
-    if request.method == "POST":
+    if request.method == "POST" and token:
 
         password_1 = request.POST['pass1']
         password_2 = request.POST['pass2']
@@ -102,33 +114,56 @@ def sing_in(request):
 
 
 def sing_out(request):
+   
    logout(request)
    messages.success(request, "Logged Out Successfully!")
    return redirect('sing_in')
 
 
+@login_required
 def home(request):
 
-    quizzes = Quiz.objects.all()
+    quizzes = Quiz.objects.filter(is_confirmed=True)
+    #Quiz.objects.filter(name='qqq').delete()
     return render(request, 'base/home.html', {'quizzes': quizzes})
 
 
+@login_required
 def create_quiz(request):  
 
     title = 'Create a new quiz!'
     form = QuizForm()
 
     if request.method == "POST":
+        
         form = QuizForm(request.POST)  
+        
         if form.is_valid():
             form.save()
 
+        quiz = Quiz.objects.get(name=request.POST['name'])
+
+        if request.user.is_staff:
+            
+            quiz.is_confirmed = True
+            quiz.save()
+
+            messages.success(request, "Creating quiz Successfully!")
+        else:
+            admins = User.objects.filter(is_staff=True)
+            admin_emails = [admin.email for admin in admins]
+            if send_confirm_correctness(admin_emails, "Quiz", quiz.pk) == len(admins):
+                messages.info(request, "Since you are not an administrator, you must wait for an administrator to approve your quiz!")
+
+            
+            
         return redirect('home')
     
     context = {'form': form, 'title': title}
     return render(request, 'base/create.html', context)
 
 
+@login_required
 def create_question(request, quiz_id):
 
     title = 'Create a new question!'
@@ -143,32 +178,66 @@ def create_question(request, quiz_id):
         formset = AnswerFormSet(request.POST)
         
         if form.is_valid() and formset.is_valid() :
-
-            messages.success(request, "Creating question Successfully!")
             
             question = form.save(commit=False)
             quiz = Quiz.objects.get(pk=quiz_id)
             question.quiz = quiz
             question.save()
 
+            if request.user.is_staff:
+                question.is_confirmed = True
+                question.save()
+                messages.success(request, "Creating question Successfully!")
+            else:
+                admins = User.objects.filter(is_staff=True)
+                admin_emails = [admin.email for admin in admins]
+                if send_confirm_correctness(admin_emails, "Question", question.pk) == len(admins):
+                    messages.info(request, "Since you are not an administrator, you must wait for an administrator to approve your question!")
+            
+
             for answer_form in formset:
                 answer = answer_form.save(commit=False)
                 answer.question = question
+                if request.user.is_staff:
+                    question.is_confirmed = True
                 answer.save()
         else:
             messages.error(request, "Bad Credentials!")
+
         return redirect(reverse('start_quiz', kwargs={'pk': quiz_id}))
 
     context = {'form': form, 'formset': formset, 'title': title}
     return render(request, 'base/create.html', context)
 
 
+def confirm_correctness(request, model_name, id, token):
+
+    if token and model_name=="Quiz":
+        model = Quiz.objects.get(pk=id)
+        model.is_confirmed = True
+        model.save()
+    
+    elif token and model_name=="Question":
+        model = Question.objects.get(pk=id)
+        model.is_confirmed = True
+        model.save()
+        
+        answers = Answer.objects.filter(question=model)
+        for a in answers:
+            a.is_confirmed = True
+            a.save()
+
+    messages.success(request, f"Confirming {model_name} Successfully!")
+    return redirect('home')
+
+
+@login_required
 def question(request, quiz_id):
 
     Current_Quiz = Quiz.objects.get(id=quiz_id)
-    Questions = Question.objects.filter(quiz=Current_Quiz)
+    Questions = Question.objects.filter(quiz=Current_Quiz).filter(is_confirmed=True)
         
-    Answers = Answer.objects.all()
+    Answers = Answer.objects.all().filter(is_confirmed=True)
     AnswerFormSet = formset_factory(Answer_Select_Form, extra=len(Questions))
     formset = AnswerFormSet()
     
@@ -180,6 +249,8 @@ def question(request, quiz_id):
     context = {'quiz_id':quiz_id, 'list': list, 'Questions': Questions}
     return render(request, 'base/question.html', context)
 
+
+@login_required
 def summary(request, quiz_id):
 
     points=0

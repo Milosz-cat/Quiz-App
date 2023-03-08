@@ -143,5 +143,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'djangoquizapp@gmail.com'
-EMAIL_HOST_PASSWORD = 'pokvhhxgvplutbti'
+EMAIL_HOST_USER = 'email@gmail.com'
+EMAIL_HOST_PASSWORD = 'password'
+
+LOGIN_URL = 'sing_in/'
