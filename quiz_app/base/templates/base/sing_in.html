@@ -1,31 +1,57 @@
-{% extends 'base/base.html' %}
-{% block title %}Login{% endblock %}
+{% extends 'base/base.html' %} {% block title %}Login{% endblock %} 
 {% block content %}
-
 
 <form action="" method="POST">
   {% csrf_token %}
 
-  <div class="card-header"><h5 class="card-title">Login</h5></div>
-    <div class="card-body">
+  <div class="d-flex justify-content-center">
+    <div><h2>Login</h2></div>
+  </div>
+  <br /><br />
 
-      <div class="form-outline mb-5">
-        <input type="text" id="username" name="username" for="" placeholder="Enter Your Username" class="form-control form-control-lg" Required/>
-      </div>
+  <div class="card-body">
+    <div class="form-outline mb-5">
+      <input
+        type="text"
+        id="username"
+        name="username"
+        for=""
+        placeholder="Enter Your Username"
+        class="form-control form-control-lg"
+        required
+      />
+    </div>
 
-      <div class="form-outline mb-5">
-        <input type="password" id="pass1" for="" name="pass1" placeholder="Enter Your Password" class="form-control form-control-lg" Required/>
-      </div>
-
-      <div class="row mb-4">
-           <a href="{% url 'password_reset_form' %}">Forgot password?</a>
-      </div>
-
-      
-        <button type="submit"
-        class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Login</button>
+    <div class="form-outline mb-5">
+      <input
+        type="password"
+        id="pass1"
+        for=""
+        name="pass1"
+        placeholder="Enter Your Password"
+        class="form-control form-control-lg"
+        required
+      />
     </div>
   </div>
+  <div class="d-flex justify-content-center">
+    <a href="sing_in">
+      <button class="btn btn-success btn-block btn-lg text-body">
+        Sign In
+      </button>
+    </a>
+  </div>
+  <br /><br />
 </form>
+<div class="d-flex justify-content-between">
+  <a href="{% url 'password_reset_form' %}">
+    <button class="btn btn-success btn-block btn-lg text-body">
+      Forgot password?
+    </button>
+  </a>
+  <a href="{% url 'sing_up' %}">
+    <button class="btn btn-success btn-block btn-lg text-body">Sing Up</button>
+  </a>
+</div>
 
 {% endblock content %}

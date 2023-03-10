@@ -8,20 +8,22 @@
   <a href="{% url 'create_question' quiz.id %}">
     <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Create a Question </button>
   </a>
-</div>
+</div><br><br>
 
-<h1><span class="badge bg-secondary">{{quiz.name}}</span></h1>
+<div class="d-flex justify-content-center">
+  <h1><span class="badge bg-secondary">{{quiz.name}}</span></h1>
+</div><br>
 
-{{ quiz.description }}
+<h5 class='text-center'>{{ quiz.description }}</h5></div><br>
 
-<div class="col">
-    {% if question_count < 3 %}
-      <div class="badge bg-secondary"><h5> You must create at least 3 questions to start the quiz! </h5> </div>
-    {% else %}
-      <a href="{% url 'question' quiz_id=quiz.id %}">
-        <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Let's START ! </button>
-      </a>
-    {% endif %}  
+<div class="d-flex justify-content-center">
+  {% if question_count < 3 %}
+    <div class="badge bg-secondary"><h5> You must create at least 3 questions to start the quiz! </h5> </div>
+  {% else %}
+    <a href="{% url 'question' quiz_id=quiz.id %}">
+      <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Let's START ! </button>
+    </a>
+  {% endif %}  
 </div>
 
 {% endblock content %}

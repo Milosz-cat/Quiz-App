@@ -1,16 +1,14 @@
-{% extends 'base/base.html' %}
-
-{% block title %}Questions{% endblock title%}
-
-{% block content %}
-
+{% extends 'base/base.html' %} {% block title %}Summary{% endblock title%} 
+{%block content %}
 
 <div class="d-flex justify-content-center">
-    <h1>Summary</h1>
+  <h1>Summary</h1>
 </div>
-<br><br>
-<h5> You earn {{ points }} points, which is {{ percentages }}%, Congratulation ! </h5>
-<br>
+<br /><br />
+<h5 class="card bg-secondary text-center">
+  You earn {{ points }} points, which is {{ percentages }}%, Congratulation !
+</h5>
+<br />
 <table class="table text-white">
   <thead>
     <tr>
@@ -23,21 +21,27 @@
   </thead>
   <tbody>
     {% for user in leaderboard %}
-      <tr>
-        <td>{{ forloop.counter }}.</td> 
-        <td>{{ user.username }}</td>
-        <td>{{ user.score }}</td>
-        <td>{{ user.time }} </td>
-        <td>{{ user.date }} </td>
-      </tr>
+    <tr>
+      <td>{{ forloop.counter }}.</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.score }}</td>
+      <td>{{ user.time }}</td>
+      <td>{{ user.date }}</td>
+    </tr>
     {% endfor%}
   </tbody>
 </table>
 
-<br>
+<br />
 <div class="d-flex justify-content-center">
   <a href="{% url 'home'  %}">
-    <button type="submit" name='next' class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Next </button>
+    <button
+      type="submit"
+      name="next"
+      class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+    >
+      Next
+    </button>
   </a>
 </div>
 

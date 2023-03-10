@@ -1,58 +1,52 @@
-{% extends 'base/base.html' %}
-
-{% block title %}Home{% endblock %}
-
+{% extends 'base/base.html' %} 
+{% block title %}Home{% endblock title %}
 {% block content %}
 
-<h5 class="card-title"> Welcome to Quiz World! </h5>
+<div class="col">
+  <a href="{% url 'sing_out' %}">
+    <button
+      type="submit"
+      class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+    >
+      Sing Out
+    </button>
+  </a>
+</div><br><br>
 
-  {% if  request.user.is_authenticated %}
-  
-    <p> Hello {{ request.user}} </p>
-  
-    <div class="col">
-      <a href="{% url 'sing_out' %}">
-        <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Sing Out  </button>
-      </a>
-    </div>
+<div class="d-flex justify-content-center">
+  <h3 style="text-align: center;"> Hi {{ request.user }}, Welcome to Quiz World! Choose one of the quiz categories :</h3>
+</div><br><br>
 
-    <br>
 
-    <div class="col">
-      <a href="{% url 'create_quiz' %}">
-        <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Create a Quiz </button>
-      </a>
-    </div>
-    
-  <h1> List of category for choose </h1>
-    
-    <div class="form-group" >          
-      {% for quiz in quizzes %}
-        <a href="{% url 'start_quiz' quiz.pk %}">
-          <button type="button" class="btn btn-light btn-square-md ">
-            {{ quiz.name }}
-          </button>
-        </a> 
-      {% endfor %}
-    </div>
-
-  {% else %}
-
-    <div class="container align-items-center">
-        <div class="row ">
-          <div class="col">
-              <a href="sing_up">
-                  <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Sing Up </button>
-              </a>
-          </div>
-          <div class="col">
-              <a href="sing_in">  
-                  <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Sing In </button> 
-              </a>
-          </div>
+{% for quiz in quizzes %}
+<a href="{% url 'start_quiz' quiz.pk %}" class="text-decoration-none">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card bg-secondary">
+        <div class="card-body">
+          <h4 class="card-title text-white text-center ">{{ quiz.name }}</h4>
         </div>
+      </div>
     </div>
+  </div>
+</a>
+{% endfor %}
 
-  {% endif %}
-  
+
+
+<p class="text-center text-muted mt-5 mb-0">Want to create your own quiz?           
+  <div class="col">
+      <div class="d-flex justify-content-center">
+        <a href="{% url 'create_quiz' %}">
+        <button
+          type="submit"
+          class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+        >
+          Create a Quiz
+        </button>
+      </a>
+      </div>
+  </div>
+</p>
+
 {% endblock content %}

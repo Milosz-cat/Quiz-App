@@ -1,30 +1,28 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base.html' %} {% block title %}Create{% endblock title %} 
+{%block content %}
 
-{% block content %}
+<h1 class="text-center">{{ title }}</h1>
 
-<h1>{{ title }}</h1>
+<div class="card-body p-5">
+  <form action=" " method="POST" enctype="multipart/form-data">
+    {% csrf_token %} {{ form }} <br><br>
 
-    <div class="card-body p-5">
-                
-        <form action=" " method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+    {{ formset.management_form }} 
+    {% for answer_form in formset %} 
+      {{ answer_form }}<br><br>
+    {% endfor %}
 
-            {{ form }} <br><br>
-            
-            {{ formset.management_form }}
-            {% for answer_form in formset %}
-                {{ answer_form }}<br>
-            {% endfor %}
+    <br /><br />
 
-            <br><br>
-
-            <div class="d-flex justify-content-center">
-                <button type="submit"
-                class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Create</button>
-            </div>
-
-        </form>
-
+    <div class="d-flex justify-content-center">
+      <button
+        type="submit"
+        class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+      >
+        Create
+      </button>
     </div>
+  </form>
+</div>
 
 {% endblock content %}

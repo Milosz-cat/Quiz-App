@@ -1,74 +1,87 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base.html' %} {% block title %}Questions{% endblock title%} 
+{%block content %}
 
-{% block title %}Questions{% endblock title%}
+<form action="{% url 'summary' quiz_id %}" method="post" id="my-form">
+  {% csrf_token %} {% for form, question in list %}
+  <div class="item" class="card-body p-5">
+    <h3 class="card bg-secondary">{{ forloop.counter }}. {{ question }}</h3>
+    <br />
 
-{% block content %}
-
-
-<form action="{% url 'summary' quiz_id %}" method="post" id='my-form'>
-  {% csrf_token %}
-    {% for form, question in list %}
-      <div class="item" class="card-body p-5">
-          <h2>{{ forloop.counter }}. {{ question }} </h2>
-      
-      <h3>{{ form }}</h3></div>
-    {% endfor%}<br><br>
-    <div class="d-flex justify-content-center padding-2">
-      <input type="submit" value="Send" id="send" class="btn btn-success btn-block btn-lg text-body">
-    </div>
+    <h3>{{ form }}</h3>
+  </div>
+  {% endfor%}<br /><br />
+  <div class="d-flex justify-content-center padding-2">
+    <input
+      type="submit"
+      value="Send"
+      id="send"
+      class="btn btn-success btn-block btn-lg text-body"
+    />
+  </div>
 </form>
 <div class="d-flex justify-content-between">
-    <button class="btn btn-success btn-block btn-lg text-body" id="prev">Previous</button>
-    <button class="btn btn-success btn-block btn-lg text-body" id="next">Next</button>
+  <button class="btn btn-success btn-block btn-lg text-body" id="prev">
+    Previous
+  </button>
+  <button class="btn btn-success btn-block btn-lg text-body" id="next">
+    Next
+  </button>
 </div>
 
-
+<!-- The script below is responsible for switching questions using buttons
+  by hiding all elements (that is, setting button.style.display = "none";)
+  except for the current question, when we go through all the questions, 
+  it will show the option to send fromluzra with questions for summary. 
+  Also prevents you from going back when you are on the 1st question and moving 
+  to the next one on the last question -->
 <script>
+
   let currentIndex = 0;
 
-  const elements = document.querySelectorAll('.item');
-  var button = document.querySelector('#send');
+  const elements = document.querySelectorAll(".item");
+  var button = document.querySelector("#send");
 
-  elements.forEach(element => element.style.display = 'none');
-  button.style.display = 'block';
+  elements.forEach((element) => (element.style.display = "none"));
+  button.style.display = "block";
 
-  elements[currentIndex].style.display = 'block';
-  button.style.display = 'none';
+  elements[currentIndex].style.display = "block";
+  button.style.display = "none";
 
-  const prevButton = document.getElementById('prev');
-  prevButton.addEventListener('click', () => {
+  const prevButton = document.getElementById("prev");
+  prevButton.addEventListener("click", () => {
     if (currentIndex > 0) {
-      elements[currentIndex].style.display = 'none';
+      elements[currentIndex].style.display = "none";
       currentIndex--;
-      elements[currentIndex].style.display = 'block';
+      elements[currentIndex].style.display = "block";
     }
-
   });
 
-  const nextButton = document.getElementById('next');
-  nextButton.addEventListener('click', () => {
+  const nextButton = document.getElementById("next");
+  nextButton.addEventListener("click", () => {
     if (currentIndex < elements.length - 1) {
-      elements[currentIndex].style.display = 'none';
+      elements[currentIndex].style.display = "none";
       currentIndex++;
-      elements[currentIndex].style.display = 'block';
+      elements[currentIndex].style.display = "block";
     }
-    if(currentIndex == elements.length - 1) {
-      button.style.display = 'block';
+    if (currentIndex == elements.length - 1) {
+      button.style.display = "block";
     }
   });
 </script>
 
+<!-- The following script is responsible for starting and ending
+  the duration of the quiz when you submit the form. -->
 <script>
   var startTime = Date.now(); // start duration time
 
-  document.getElementById('my-form').addEventListener('submit', function() {
+  document.getElementById("my-form").addEventListener("submit", function () {
     var endTime = Date.now(); // stop duration time
     var duration = endTime - startTime;
-    var durationField = document.createElement('input');
-    durationField.setAttribute('type', 'hidden');
-    durationField.setAttribute('name', 'duration');
-    durationField.setAttribute('value', duration);
-    document.getElementById('my-form').appendChild(durationField); // add duration to dictionary
+    var durationField = document.createElement("input");
+    durationField.setAttribute("type", "hidden");
+    durationField.setAttribute("name", "duration");
+    durationField.setAttribute("value", duration);
+    document.getElementById("my-form").appendChild(durationField); // add duration to dictionary
   });
 </script>
 
