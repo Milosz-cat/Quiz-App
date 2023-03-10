@@ -41,7 +41,7 @@ def Password_Reset(request):
         else:
             user_obj = User.objects.get(email=email)
             
-            if send_forget_password_mail(user_obj.email, user_obj.pk) == True:
+            if send_forget_password_mail(user_obj.email, user_obj.pk):
                 messages.success(request, "A link to reset your password has been sent to your email.")
                 return render(request, 'base/sing_in.html')
 
@@ -102,7 +102,7 @@ def sing_in(request):
         print(request.POST)
         user = authenticate(username=username, password=pass1)
 
-        if user is not None:
+        if user:
             login(request, user)
             return redirect('home')
 
@@ -152,7 +152,7 @@ def create_quiz(request):
         else:
             admins = User.objects.filter(is_staff=True)
             admin_emails = [admin.email for admin in admins]
-            if send_confirm_correctness(admin_emails, "Quiz", quiz.pk) == len(admins):
+            if send_confirm_correctness(admin_emails, quiz) == len(admins):
                 messages.info(request, "Since you are not an administrator, you must wait for an administrator to approve your quiz!")
 
             
@@ -184,6 +184,13 @@ def create_question(request, quiz_id):
             question.quiz = quiz
             question.save()
 
+            for answer_form in formset:
+                answer = answer_form.save(commit=False)
+                answer.question = question
+                if request.user.is_staff:
+                    answer.is_confirmed = True
+                answer.save()
+
             if request.user.is_staff:
                 question.is_confirmed = True
                 question.save()
@@ -191,16 +198,9 @@ def create_question(request, quiz_id):
             else:
                 admins = User.objects.filter(is_staff=True)
                 admin_emails = [admin.email for admin in admins]
-                if send_confirm_correctness(admin_emails, "Question", question.pk) == len(admins):
+                if send_confirm_correctness(admin_emails, question) == len(admins):
                     messages.info(request, "Since you are not an administrator, you must wait for an administrator to approve your question!")
             
-
-            for answer_form in formset:
-                answer = answer_form.save(commit=False)
-                answer.question = question
-                if request.user.is_staff:
-                    question.is_confirmed = True
-                answer.save()
         else:
             messages.error(request, "Bad Credentials!")
 
@@ -214,18 +214,17 @@ def confirm_correctness(request, model_name, id, token):
 
     if token and model_name=="Quiz":
         model = Quiz.objects.get(pk=id)
-        model.is_confirmed = True
-        model.save()
     
     elif token and model_name=="Question":
         model = Question.objects.get(pk=id)
-        model.is_confirmed = True
-        model.save()
         
         answers = Answer.objects.filter(question=model)
         for a in answers:
             a.is_confirmed = True
             a.save()
+    
+    model.is_confirmed = True
+    model.save()
 
     messages.success(request, f"Confirming {model_name} Successfully!")
     return redirect('home')
