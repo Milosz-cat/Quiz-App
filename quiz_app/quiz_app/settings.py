@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
+from django.urls import reverse_lazy
 
 load_dotenv()
 """
@@ -151,4 +152,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = str(os.getenv("EMAIL_HOST_USER"))
 EMAIL_HOST_PASSWORD = str(os.getenv("EMAIL_HOST_PASSWORD"))
 
-LOGIN_URL = "sing_in/"
+LOGIN_URL = "/sing_in/"

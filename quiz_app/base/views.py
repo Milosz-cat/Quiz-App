@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.forms import formset_factory
 from django.views.generic import DetailView
+from django.core.validators import validate_email
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -15,13 +16,14 @@ from .helpers import send_forget_password_mail, send_confirm_correctness
 from datetime import timedelta
 
 
+
 class QuizDetailView(LoginRequiredMixin, DetailView):
     """The class inherits from DetailView to display the quiz details in the templet
     and from LoginRequiredMixin to redirect the user to login if he wants to access
     the quiz without logging in.
     """
 
-    login_url = "sing_in/"
+    login_url = "/sing_in/"
     model = Quiz
     template_name = "base/start_quiz.html"
     context_object_name = "quiz"
@@ -122,6 +124,12 @@ def sing_up(request):
         last_name = request.POST["lname"]
         email = request.POST["email"]
 
+        if not validate_email(email):
+            messages.error(
+                request, "The email you entered is incorrect, Please try again!"
+            )
+            return redirect(request.path)
+
         if User.objects.filter(email=email).exists():
             messages.error(
                 request,
@@ -163,16 +171,20 @@ def sing_in(request):
     if request.method == "POST":
         username = request.POST["username"]
         pass1 = request.POST["pass1"]
-        print(request.POST)
         user = authenticate(username=username, password=pass1)
 
         if user:
             login(request, user)
-            return redirect("home")
+            next_url = request.GET.get('next')
+            print(next_url)
+            if next_url:
+                return redirect(next_url)
+            else:
+                return redirect('home')
 
         else:
             messages.error(request, "Bad Credentials!")
-            return redirect("sing_in")
+            return redirect(request.path)
 
     return render(request, "base/sing_in.html")
 

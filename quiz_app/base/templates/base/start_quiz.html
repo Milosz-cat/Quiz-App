@@ -4,11 +4,18 @@
 
 {% block content %}
 
-<div class="col">
-  <a href="{% url 'create_question' quiz.id %}">
-    <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"> Create a Question </button>
-  </a>
-</div><br><br>
+<p class="text-muted mb-0">Want to create question?           
+  <div class="col">
+        <a href="{% url 'create_question' quiz.id %}">
+        <button
+          type="submit"
+          class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+        >
+          Create a Question
+        </button>
+      </a>
+  </div>
+</p><br><br>
 
 <div class="d-flex justify-content-center">
   <h1><span class="badge bg-secondary">{{quiz.name}}</span></h1>
