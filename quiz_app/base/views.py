@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.forms import formset_factory
 from django.views.generic import DetailView
-from django.core.validators import validate_email
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -123,12 +122,6 @@ def sing_up(request):
         first_name = request.POST["fname"]
         last_name = request.POST["lname"]
         email = request.POST["email"]
-
-        if not validate_email(email):
-            messages.error(
-                request, "The email you entered is incorrect, Please try again!"
-            )
-            return redirect(request.path)
 
         if User.objects.filter(email=email).exists():
             messages.error(
