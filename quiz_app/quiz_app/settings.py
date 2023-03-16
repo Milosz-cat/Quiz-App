@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "base.apps.BaseConfig",
+    "quiz.apps.QuizConfig",
+    "reset.apps.ResetConfig",
 ]
 
 MIDDLEWARE = [
@@ -152,4 +154,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = str(os.getenv("EMAIL_HOST_USER"))
 EMAIL_HOST_PASSWORD = str(os.getenv("EMAIL_HOST_PASSWORD"))
 
-LOGIN_URL = "/sing_in/"
+LOGIN_URL = "/sign_in/"
