@@ -20,11 +20,11 @@ Django , Bootstrap, Javascript
 
 ## Screenshots
 
-![App Screenshot](screenshots/Screenshot from 2023-03-11 15-59-48.png)
+![App Screenshot](https://github.com/Milosz-cat/Quiz-App/blob/main/screenshots/Screenshot%20from%202023-03-11%2015-59-48.png)
 
-![App Screenshot](screenshots/Screenshot from 2023-03-11 16-01-09.png)
+![App Screenshot](https://github.com/Milosz-cat/Quiz-App/blob/main/screenshots/Screenshot%20from%202023-03-11%2016-01-09.png)
 
-![App Screenshot](screenshots/Screenshot from 2023-03-11 16-02-23.png)
+![App Screenshot](https://github.com/Milosz-cat/Quiz-App/blob/main/screenshots/Screenshot%20from%202023-03-11%2016-02-23.png)
 
 
 ## Installation
