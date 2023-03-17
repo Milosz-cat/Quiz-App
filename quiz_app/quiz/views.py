@@ -15,7 +15,7 @@ from datetime import timedelta
 
 
 class QuizDetailView(LoginRequiredMixin, DetailView):
-    """The class inherits from DetailView to display the quiz details in the templet
+    """The class inherits from DetailView to display the quiz details in the templete
     and from LoginRequiredMixin to redirect the user to login if he wants to access
     the quiz without logging in.
     """
@@ -179,6 +179,7 @@ def summary(request, quiz_id):
     the quiz is multi-choice, i.e. 1 point or zero for each question. The function receives
     the time of solving the quiz calculated on the basis of the script in the template.
     If a user has one of the top 5 results, he is added to the list of top users. Login required.
+    
     Args:
         request.POST[form-{i}-answers] (bool): Information whether a given answer field has been checked.
         request.POST[duration] (string): Duration of the quiz in milliseconds.

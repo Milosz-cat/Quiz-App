@@ -104,5 +104,4 @@ def home(request):
     """
 
     quizzes = Quiz.objects.filter(is_confirmed=True)
-    # Quiz.objects.filter(name='#').delete()
     return render(request, "base/home.html", {"quizzes": quizzes})
