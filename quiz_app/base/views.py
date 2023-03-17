@@ -36,6 +36,14 @@ def sign_up(request):
             )
             return render(request, "base/sign_up.html")
 
+        if '@' not in email:
+            messages.error(
+                request,
+                "Wrong email entered, Please try again",
+            )
+            return render(request, "base/sign_up.html")
+
+
         password_1 = request.POST["pass1"]
         password_2 = request.POST["pass2"]
 
