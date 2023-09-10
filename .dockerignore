@@ -1,0 +1,21 @@
+# git
+.git
+.gitignore
+
+# docker
+.docker
+
+# python
+app/__pycache__/
+app/*/__pycache__/
+app/*/*/__pycache__/
+app/*/*/*/__pycache__/
+
+*/migrations/*
+!*/migrations/__init__.py
+
+.venv/
+.env/
+venv/
+
+.vscode
