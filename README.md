@@ -4,6 +4,7 @@ Simple quiz-app built with Django.
 
 ## Features
 
+- ELK for monitoring
 - CRUD functionality with quizzes and questions
 - validation of new quizzes/questions by sending email to admins if the user does not have admin status
 - password reset by sending an email with a link
